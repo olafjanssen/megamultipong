@@ -18,6 +18,7 @@ var multipong = (function (chain) {
 
         isLeft = false,
         isRight = false,
+        isMiddle = false,
         isCenter = false,
         frameInterval = 1000 / 60,
         interval,
@@ -37,85 +38,87 @@ var multipong = (function (chain) {
     }
 
     function sendMessage(pos, message) {
-        //chain.send('multipong', pos, message);
-        handleIncomingMessage(message);
+        chain.send('multipong', pos, message);
+        //handleIncomingMessage(message);
     }
 
     function gameLoop() {
-        if (balls.forEach(function (ball) {
-                // update ball object
-                ball.left += Math.cos(ball.angle) * ball.speed;
-                ball.top += Math.sin(ball.angle) * ball.speed;
+        balls.forEach(function (ball) {
+            // update ball object
+            ball.left += Math.cos(ball.angle) * ball.speed;
+            ball.top += Math.sin(ball.angle) * ball.speed;
 
-                var ballElement = document.getElementById('ball' + ball.id);
-                if (!ballElement) {
-                    return;
+            var ballElement = document.getElementById('ball' + ball.id);
+            if (!ballElement) {
+                return;
+            }
+            // check edge collision
+            var ballRect = ballElement.getBoundingClientRect();
+            var dx = Math.cos(ball.angle),
+                dy = Math.sin(ball.angle);
+
+            if (ballRect.top < 0 && dy < 0) {
+                dy = Math.abs(dy);
+                hitWallSound.play();
+            } else if (ballRect.bottom > window.innerHeight && dy > 0) {
+                dy = -Math.abs(dy);
+                hitWallSound.play();
+            } else if (ballRect.right < 0) {
+                balls.splice(balls.indexOf(ball), 1);
+                ballElement.parentNode.removeChild(ballElement);
+                if (isLeft) {
+                    sendMessage(Math.floor(devices / 2), {action: 'restart', score: 'right'});
+                } else {
+                    var relPos = toRelative(ball.left, ball.top);
+                    var newBall = ball;
+                    newBall.left = 1;
+                    newBall.top = relPos.top;
+                    sendMessage(deviceIndex - 1, {action: 'enter', ball: newBall});
                 }
-                // check edge collision
-                var ballRect = ballElement.getBoundingClientRect();
-                var dx = Math.cos(ball.angle),
-                    dy = Math.sin(ball.angle);
-
-                if (ballRect.top < 0 && dy < 0) {
-                    dy = Math.abs(dy);
-                    hitWallSound.play();
-                } else if (ballRect.bottom > window.innerHeight && dy > 0) {
-                    dy = -Math.abs(dy);
-                    hitWallSound.play();
-                } else if (ballRect.right < 0) {
-                    balls.splice(balls.indexOf(ball), 1);
-                    ballElement.parentNode.removeChild(ballElement);
-                    if (isLeft) {
-                        sendMessage(Math.floor(devices / 2), {action: 'restart', score: 'right'});
-                    } else {
-                        var relPos = toRelative(ball.left, ball.top);
-                        var newBall = ball;
-                        newBall.left = 1;
-                        newBall.top = relPos.top;
-                        sendMessage(deviceIndex - 1, {action: 'enter', ball: newBall});
-                    }
-                    return;
-                } else if (ballRect.left > window.innerWidth) {
-                    balls.splice(balls.indexOf(ball), 1);
-                    ballElement.parentNode.removeChild(ballElement);
-                    if (isRight) {
-                        sendMessage(Math.floor(devices / 2), {action: 'restart', score: 'left'});
-                    } else {
-                        var relPos = toRelative(ball.left, ball.top);
-                        var newBall = ball;
-                        newBall.left = 0;
-                        newBall.top = relPos.top;
-                        sendMessage(deviceIndex + 1, {action: 'enter', ball: newBall});
-                    }
-                    return;
+                return;
+            } else if (ballRect.left > window.innerWidth) {
+                balls.splice(balls.indexOf(ball), 1);
+                ballElement.parentNode.removeChild(ballElement);
+                if (isRight) {
+                    sendMessage(Math.floor(devices / 2), {action: 'restart', score: 'left'});
+                } else {
+                    var relPos = toRelative(ball.left, ball.top);
+                    var newBall = ball;
+                    newBall.left = 0;
+                    newBall.top = relPos.top;
+                    sendMessage(deviceIndex + 1, {action: 'enter', ball: newBall});
                 }
+                return;
+            }
 
-                // check paddle collision
-                var leftRect = leftElement.getBoundingClientRect(),
-                    rightRect = rightElement.getBoundingClientRect();
+            // check paddle collision
+            var leftRect = leftElement.getBoundingClientRect(),
+                rightRect = rightElement.getBoundingClientRect();
 
-                if (isRight && ballRect.right > rightRect.left && dx > 0 && ballRect.top < rightRect.bottom && ballRect.bottom > rightRect.top) {
-                    dx = -Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
-                    ball.speed += 2;
-                    hitPaddleSound.play();
-                    addBall();
-                }
+            if (isRight && ballRect.right > rightRect.left && dx > 0 && ballRect.top < rightRect.bottom && ballRect.bottom > rightRect.top) {
+                dx = -Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
+                ball.speed += 2;
+                hitPaddleSound.play();
+                addBall();
+            }
 
-                if (isLeft && ballRect.left < leftRect.right && dx < 0 && ballRect.top < leftRect.bottom && ballRect.bottom > leftRect.top) {
-                    dx = Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
-                    ball.speed += 2;
-                    hitPaddleSound.play();
-                    addBall();
-                }
+            if (isLeft && ballRect.left < leftRect.right && dx < 0 && ballRect.top < leftRect.bottom && ballRect.bottom > leftRect.top) {
+                dx = Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
+                ball.speed += 2;
+                hitPaddleSound.play();
+                addBall();
+            }
 
-                // update ball angle
-                ball.angle = Math.atan2(dy, dx);
-                // update positions in css
-                if (ballElement) {
-                    ballElement.style.left = ball.left + 'px';
-                    ballElement.style.top = ball.top + 'px';
-                }
-            }));
+            // update ball angle
+            ball.angle = Math.atan2(dy, dx);
+            // update positions in css
+            if (ballElement) {
+                ballElement.style.left = ball.left + 'px';
+                ballElement.style.top = ball.top + 'px';
+            }
+        });
+
+        requestAnimationFrame(gameLoop);
     }
 
     function addBall(newBall) {
@@ -149,8 +152,6 @@ var multipong = (function (chain) {
 
     function restart() {
         if (isCenter) {
-            console.log('restart');
-
             addBall();
         }
     }
@@ -161,11 +162,32 @@ var multipong = (function (chain) {
 
     function init(_devices, _deviceIndex) {
 
-        scoreSound = {audio: document.getElementById('score-sound'), play: function(){ console.log(this.audio); this.audio.play()}};
-        hitPaddleSound = {audio: document.getElementById('hit-paddle-sound'), play: function(){ this.audio.play()}};
-        hitWallSound = {audio: document.getElementById('hit-wall-sound'), play: function(){ this.audio.play()}};
-        startSound = {audio: document.getElementById('start-sound'), play: function(){ this.audio.play()}};
-        gameOverSound = {audio: document.getElementById('game-over-sound'), play: function(){ this.audio.play()}};
+        scoreSound = {
+            audio: document.getElementById('score-sound'), play: function () {
+                console.log(this.audio);
+                this.audio.play()
+            }
+        };
+        hitPaddleSound = {
+            audio: document.getElementById('hit-paddle-sound'), play: function () {
+                this.audio.play()
+            }
+        };
+        hitWallSound = {
+            audio: document.getElementById('hit-wall-sound'), play: function () {
+                this.audio.play()
+            }
+        };
+        startSound = {
+            audio: document.getElementById('start-sound'), play: function () {
+                this.audio.play()
+            }
+        };
+        gameOverSound = {
+            audio: document.getElementById('game-over-sound'), play: function () {
+                this.audio.play()
+            }
+        };
 
         leftElement = document.getElementById('left-paddle');
         rightElement = document.getElementById('right-paddle');
@@ -202,18 +224,20 @@ var multipong = (function (chain) {
             })
         }
 
+        chain.listen('multipong', deviceIndex, handleIncomingMessage);
+
         restart();
 
-        document.getElementById('message').innerText = isCenter? 'starting' : 'ready?';
-        setTimeout(function(){
+        document.getElementById('message').innerText = isCenter ? 'starting' : 'ready?';
+        setTimeout(function () {
             document.getElementById('message').innerText = '';
             document.body.classList.add('playing');
-            // start the game loop
-            interval = setInterval(function () {
-                gameLoop();
-            }, frameInterval);
+
             updateScore();
             startSound.play();
+
+            // start the game loop
+            interval = requestAnimationFrame(gameLoop);
         }, 3000);
 
     }
@@ -231,11 +255,26 @@ var multipong = (function (chain) {
         document.getElementById('score').innerHTML = '<span>' + score.left + '</span><span>' + score.right + '</span>';
 
         if (score.left === maxScore || score.right === maxScore) {
-            document.body.classList.remove('playing');
-            document.getElementById('message').innerText = (score.left === maxScore?'left' : 'right') + ' wins';
-            clearInterval(interval);
-            gameOverSound.play();
+            gameOver(score.left === maxScore ? 'left' : 'right');
         }
+    }
+
+    function setMessage(message) {
+        document.getElementById('message').innerText = message;
+    }
+
+    function gameOver(winner) {
+        document.body.classList.remove('playing');
+        if (isCenter) {
+            setMessage('game over');
+        } else if ((isLeft && winner === 'left') || isRight && winner === 'right') {
+            setMessage('you win!');
+        } else {
+            setMessage('you lose!');
+        }
+
+        cancelAnimationFrame(interval);
+        gameOverSound.play();
     }
 
     function handleIncomingMessage(data) {
