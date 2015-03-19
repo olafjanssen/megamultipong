@@ -36,6 +36,10 @@ var multipong = (function (chain) {
         ball.top += Math.sin(ball.angle) * ball.speed;
 
         if (frame > 5) {
+            var ballElement = document.getElementById('ball' + 1);
+            if (!ballElement) {
+                return;
+            }
             // check edge collision
             var ballRect = ballElement.getBoundingClientRect();
             var dx = Math.cos(ball.angle),
@@ -46,6 +50,7 @@ var multipong = (function (chain) {
             } else if (ballRect.bottom > window.innerHeight && dy > 0) {
                 dy = -Math.abs(dy);
             } else if (ballRect.right < 0) {
+                ballElement.parentNode.removeChild(ballElement);
                 clearInterval(interval);
                 document.body.classList.remove('play');
                 if (isLeft) {
@@ -58,6 +63,7 @@ var multipong = (function (chain) {
                     chain.send('multipong', deviceIndex - 1, {action: 'enter', ball: newBall});
                 }
             } else if (ballRect.left > window.innerWidth) {
+                ballElement.parentNode.removeChild(ballElement);
                 clearInterval(interval);
                 document.body.classList.remove('play');
                 if (isRight) {
@@ -89,13 +95,22 @@ var multipong = (function (chain) {
             ball.angle = Math.atan2(dy, dx);
         }
         // update positions in css
-        ballElement.style.left = ball.left + 'px';
-        ballElement.style.top = ball.top + 'px';
+        if (ballElement) {
+            ballElement.style.left = ball.left + 'px';
+            ballElement.style.top = ball.top + 'px';
+        }
 
     }
 
     function restart() {
         if (isCenter) {
+            // adds a new ball
+            var newElement = document.createElement('div');
+            newElement.id = 'ball' + 1;
+            newElement.classList.add('ball');
+            document.getElementById('balls').appendChild(newElement);
+
+
             var startPosition = toAbsolute(0.5, 0.5);
             ball = {speed: 10, left: startPosition.left, top: startPosition.top, angle: -30 / 180 * Math.PI};
 
@@ -109,6 +124,13 @@ var multipong = (function (chain) {
 
     function enter(newBall) {
         ball = newBall;
+
+        // adds a new ball
+        var newElement = document.createElement('div');
+        newElement.id = 'ball' + 1;
+        newElement.classList.add('ball');
+        document.getElementById('balls').appendChild(newElement);
+
         clearInterval(interval);
 
         frame = 0;

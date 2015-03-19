@@ -18,13 +18,11 @@ body.right #right-paddle {
     right: 2em;
 }
 
-body.play #ball {
+body .ball {
     border-radius: 10em;
     position: absolute;
     background: black;
     margin: -2em -2em;
     height: 4em;
     width: 4em;
-    left: 50%;
-    top: 50%;
 }
