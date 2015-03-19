@@ -2,7 +2,7 @@
   "name": "multipong",
   "version": "0.0.0",
   "authors": [
-    "Olaf Janssen <o.t.a.janssen@gmail.com>"
+    "Olaf Janssen <olaf.janssen@fontys.nl>"
   ],
   "description": "Play pong across multiple devices",
   "main": "index.html",

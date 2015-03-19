@@ -58,8 +58,6 @@ var multipong = (function (chain) {
                 } else if (ballRect.right < 0) {
                     balls.splice(balls.indexOf(ball), 1);
                     ballElement.parentNode.removeChild(ballElement);
-                    clearInterval(interval);
-                    document.body.classList.remove('play');
                     if (isLeft) {
                         sendMessage(Math.floor(devices / 2), {action: 'restart', ball: ball});
                     } else {
@@ -73,8 +71,6 @@ var multipong = (function (chain) {
                 } else if (ballRect.left > window.innerWidth) {
                     balls.splice(balls.indexOf(ball), 1);
                     ballElement.parentNode.removeChild(ballElement);
-                    clearInterval(interval);
-                    document.body.classList.remove('play');
                     if (isRight) {
                         sendMessage(Math.floor(devices / 2), {action: 'restart', ball: ball});
                     } else {
@@ -147,25 +143,11 @@ var multipong = (function (chain) {
             console.log('restart');
 
             addBall();
-
-            frame = 0;
-            interval = setInterval(function () {
-                document.body.classList.add('play');
-                gameLoop();
-            }, frameInterval);
         }
     }
 
     function enter(newBall) {
         addBall(newBall);
-
-        clearInterval(interval);
-
-        frame = 0;
-        interval = setInterval(function () {
-            document.body.classList.add('play');
-            gameLoop();
-        }, frameInterval);
     }
 
     function init(_devices, _deviceIndex) {
@@ -206,6 +188,11 @@ var multipong = (function (chain) {
         }
 
         restart();
+
+        frame = 0;
+        interval = setInterval(function () {
+            gameLoop();
+        }, frameInterval);
 
         //chain.listen('multipong', deviceIndex, function (data) {
         //});
