@@ -154,16 +154,6 @@ var multipong = (function (chain) {
         balls.push(newBall);
     }
 
-    function restart() {
-        if (isCenter) {
-            addBall();
-        }
-    }
-
-    function enter(newBall) {
-        addBall(newBall);
-    }
-
     function init(_devices, _deviceIndex) {
 
         scoreSound = {
@@ -229,7 +219,9 @@ var multipong = (function (chain) {
 
         chain.listen('multipong', deviceIndex, handleIncomingMessage);
 
-        restart();
+        if (isCenter) {
+            addBall();
+        }
 
         document.getElementById('message').innerText = isCenter ? 'starting' : 'ready?';
         setTimeout(function () {
@@ -283,7 +275,9 @@ var multipong = (function (chain) {
     function handleIncomingMessage(data) {
         if (data.action === 'restart') {
             updateScore(data.score);
-            restart();
+            if (isCenter) {
+                addBall();
+            }
         }
         if (data.action === 'enter') {
             var newBall = data.ball,
@@ -291,7 +285,7 @@ var multipong = (function (chain) {
 
             newBall.left = absolute.left;
             newBall.top = absolute.top;
-            enter(newBall);
+            addBall(newBall);
         }
     }
 
