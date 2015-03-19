@@ -20,7 +20,6 @@ var multipong = (function (chain) {
         isRight = false,
         isMiddle = false,
         isCenter = false,
-    //frameInterval = 1000 / 60,
         interval,
         time,
 
@@ -41,6 +40,12 @@ var multipong = (function (chain) {
     function sendMessage(pos, message) {
         chain.send('multipong', pos, message);
         //handleIncomingMessage(message);
+    }
+
+    function sendGlobalMessage(message) {
+        for (var i = 0;i < devices;i++) {
+            chain.send('multipong', i, message);
+        }
     }
 
     function gameLoop() {
@@ -71,7 +76,8 @@ var multipong = (function (chain) {
                 balls.splice(balls.indexOf(ball), 1);
                 ballElement.parentNode.removeChild(ballElement);
                 if (isLeft) {
-                    sendMessage(Math.floor(devices / 2), {action: 'restart', score: 'right'});
+                    scoreSound.play();
+                    sendGlobalMessage({action: 'restart', score: 'right'});
                 } else {
                     var relPos = toRelative(ball.left, ball.top);
                     var newBall = ball;
@@ -84,7 +90,8 @@ var multipong = (function (chain) {
                 balls.splice(balls.indexOf(ball), 1);
                 ballElement.parentNode.removeChild(ballElement);
                 if (isRight) {
-                    sendMessage(Math.floor(devices / 2), {action: 'restart', score: 'left'});
+                    scoreSound.play();
+                    sendGlobalMessage({action: 'restart', score: 'left'});
                 } else {
                     var relPos = toRelative(ball.left, ball.top);
                     var newBall = ball;
@@ -240,11 +247,9 @@ var multipong = (function (chain) {
     function updateScore(side) {
         if (side === 'left') {
             score.left++;
-            scoreSound.play();
         } else if (side === 'right') {
             score.right++;
-            scoreSound.play();
-        } else {
+         } else {
             score = {left: 0, right: 0};
         }
         document.getElementById('score').innerHTML = '<span>' + score.left + '</span><span>' + score.right + '</span>';
@@ -278,8 +283,7 @@ var multipong = (function (chain) {
             if (isCenter) {
                 addBall();
             }
-        }
-        if (data.action === 'enter') {
+        } else if (data.action === 'enter') {
             var newBall = data.ball,
                 absolute = toAbsolute(data.ball.left, data.ball.top);
 
