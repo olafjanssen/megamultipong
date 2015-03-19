@@ -4,6 +4,7 @@ var multipong = (function (chain) {
     var devices = 0,
         deviceIndex = 0,
         score = {left: 0, right: 0},
+        maxScore = 20,
 
         balls = [],
         ballId = 0,
@@ -12,6 +13,8 @@ var multipong = (function (chain) {
         scoreSound,
         hitPaddleSound,
         hitWallSound,
+        gameOverSound,
+        startSound,
 
         isLeft = false,
         isRight = false,
@@ -160,6 +163,8 @@ var multipong = (function (chain) {
         scoreSound = {audio: document.getElementById('score-sound'), play: function(){ console.log(this.audio); this.audio.play()}};
         hitPaddleSound = {audio: document.getElementById('hit-paddle-sound'), play: function(){ this.audio.play()}};
         hitWallSound = {audio: document.getElementById('hit-wall-sound'), play: function(){ this.audio.play()}};
+        startSound = {audio: document.getElementById('start-sound'), play: function(){ this.audio.play()}};
+        gameOverSound = {audio: document.getElementById('game-over-sound'), play: function(){ this.audio.play()}};
 
         leftElement = document.getElementById('left-paddle');
         rightElement = document.getElementById('right-paddle');
@@ -203,6 +208,7 @@ var multipong = (function (chain) {
             gameLoop();
         }, frameInterval);
         updateScore();
+        startSound.play();
 
     }
 
@@ -217,6 +223,10 @@ var multipong = (function (chain) {
             score = {left: 0, right: 0};
         }
         document.getElementById('score').innerHTML = '<span>' + score.left + '</span><span>' + score.right + '</span>';
+
+        if (score.left == maxScore || score.right == maxScore) {
+            gameOverSound.play();
+        }
     }
 
     function handleIncomingMessage(data) {
