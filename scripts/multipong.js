@@ -43,7 +43,7 @@ var multipong = (function (chain) {
     }
 
     function sendGlobalMessage(message) {
-        for (var i = 0;i < devices;i++) {
+        for (var i = 0; i < devices; i++) {
             chain.send('multipong', i, message);
         }
     }
@@ -139,7 +139,7 @@ var multipong = (function (chain) {
         }
 
         var newElement = document.createElement('div'),
-            startPosition = toAbsolute(0.5, 0.5);
+            startPosition = toAbsolute(isRight && isCenter ? 0 : 0.5, 0.5);
 
         //adds a new ball
         if (!newBall) {
@@ -249,7 +249,7 @@ var multipong = (function (chain) {
             score.left++;
         } else if (side === 'right') {
             score.right++;
-         } else {
+        } else {
             score = {left: 0, right: 0};
         }
         document.getElementById('score').innerHTML = '<span>' + score.left + '</span><span>' + score.right + '</span>';
@@ -265,12 +265,12 @@ var multipong = (function (chain) {
 
     function gameOver(winner) {
         document.body.classList.remove('playing');
-        if (isCenter) {
-            setMessage('game over');
-        } else if ((isLeft && winner === 'left') || isRight && winner === 'right') {
+        if ((isLeft && winner === 'left') || (isRight && winner) === 'right') {
             setMessage('you win!');
-        } else {
+        } else if ((isLeft && winner !== 'left') || (isRight && winner !== 'right')) {
             setMessage('you lose!');
+        } else {
+            setMessage('game over');
         }
 
         cancelAnimationFrame(interval);
