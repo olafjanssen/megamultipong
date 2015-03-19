@@ -3,6 +3,7 @@ var multipong = (function (chain) {
 
     var devices = 0,
         deviceIndex = 0,
+        score = {left: 0, right: 0},
 
         balls = [],
         ballId = 0,
@@ -55,7 +56,7 @@ var multipong = (function (chain) {
                     balls.splice(balls.indexOf(ball), 1);
                     ballElement.parentNode.removeChild(ballElement);
                     if (isLeft) {
-                        sendMessage(Math.floor(devices / 2), {action: 'restart', ball: ball});
+                        sendMessage(Math.floor(devices / 2), {action: 'restart', score: 'right'});
                     } else {
                         var relPos = toRelative(ball.left, ball.top);
                         var newBall = ball;
@@ -68,7 +69,7 @@ var multipong = (function (chain) {
                     balls.splice(balls.indexOf(ball), 1);
                     ballElement.parentNode.removeChild(ballElement);
                     if (isRight) {
-                        sendMessage(Math.floor(devices / 2), {action: 'restart', ball: ball});
+                        sendMessage(Math.floor(devices / 2), {action: 'restart', score: 'left'});
                     } else {
                         var relPos = toRelative(ball.left, ball.top);
                         var newBall = ball;
@@ -117,11 +118,11 @@ var multipong = (function (chain) {
         //adds a new ball
         if (!newBall) {
             newBall = {
-                id: (ballId++)%10000,
+                id: (ballId++) % 10000,
                 speed: 10,
                 left: startPosition.left,
                 top: startPosition.top,
-                angle: Math.PI*Math.round(Math.random()) + (Math.random() - 0.5) * 30 / 180 * Math.PI
+                angle: Math.PI * Math.round(Math.random()) + (Math.random() - 0.5) * 30 / 180 * Math.PI
             };
         }
 
@@ -189,14 +190,27 @@ var multipong = (function (chain) {
         setInterval(function () {
             gameLoop();
         }, frameInterval);
+        updateScore();
 
         //chain.listen('multipong', deviceIndex, function (data) {
         //});
     }
 
+    function updateScore(side) {
+        if (side === 'left') {
+            score.left++;
+        } else if (side === 'right') {
+            score.right++;
+        } else {
+            score = {left: 0, right: 0};
+        }
+        document.getElementById('score').innerHTML = '<span>' + score.left + '</span><span>' + score.right + '</span>';
+    }
+
     function handleIncomingMessage(data) {
         console.log(data);
         if (data.action === 'restart') {
+            updateScore(data.score);
             restart();
         }
         if (data.action === 'enter') {

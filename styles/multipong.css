@@ -1,6 +1,6 @@
 @font-face{
-    font-family: 'pixeltwist';
-    src: url('../fonts/PixelTwist.ttf') format('truetype');
+    font-family: 'edunline';
+    src: url('../fonts/edunline.ttf') format('truetype');
 }
 
 
@@ -16,7 +16,7 @@
 
 body {
     -webkit-font-smoothing: none;
-    font-family: pixeltwist, monospace;
+    font-family: edunline, monospace;
     background: black;
 }
 
@@ -29,6 +29,19 @@ h1 {
     font-size: 6em;
     display: none;
     color: white;
+}
+
+#score {
+    text-align: center;
+    font-size: 10em;
+    width: 100%;
+    color: white;
+}
+
+#score span {
+    display: inline-block;
+    margin: 0 0.25em;
+    width: 2em;
 }
 
 body.left #left-paddle {
