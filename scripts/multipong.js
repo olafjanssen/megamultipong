@@ -23,9 +23,6 @@ var multipong = (function (chain) {
         interval,
         time,
 
-        mouseLeft = 0,
-        mouseTop = 0,
-
         leftElement,
         rightElement,
         middleElement;
@@ -229,7 +226,7 @@ var multipong = (function (chain) {
 
         if (isLeft || isRight || isMiddle) {
             document.addEventListener('mousemove', function (event) {
-                mouseTop = event.clientY;
+                var mouseTop = event.clientY;
 
                 if (isLeft) {
                     leftElement.style.top = mouseTop + 'px';
@@ -240,7 +237,22 @@ var multipong = (function (chain) {
                 if (isMiddle) {
                     middleElement.style.top = mouseTop + 'px';
                 }
-            })
+            });
+            document.addEventListener('touchmove', function (event) {
+                    var touchobj = event.changedTouches[0],
+                        mouseTop = parseInt(touchobj.clientY);
+
+                event.preventDefault()
+                if (isLeft) {
+                    leftElement.style.top = mouseTop + 'px';
+                }
+                if (isRight) {
+                    rightElement.style.top = mouseTop + 'px';
+                }
+                if (isMiddle) {
+                    middleElement.style.top = mouseTop + 'px';
+                }
+            }, false);
         }
 
         chain.listen('multipong', deviceIndex, handleIncomingMessage);
