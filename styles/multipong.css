@@ -1,11 +1,34 @@
+@font-face{
+    font-family: 'pixeltwist';
+    src: url('../fonts/PixelTwist.ttf') format('truetype');
+}
+
+
 .paddle {
     position: absolute;
-    background: black;
+    background: white;
     margin-top: -2.5%;
     display: none;
     height: 10%;
     width: 2em;
     top: 4em;
+}
+
+body {
+    -webkit-font-smoothing: none;
+    font-family: pixeltwist, monospace;
+    background: black;
+}
+
+body.menu h1 {
+    display: block;
+}
+
+h1 {
+    text-align: center;
+    font-size: 6em;
+    display: none;
+    color: white;
 }
 
 body.left #left-paddle {
@@ -21,8 +44,17 @@ body.right #right-paddle {
 body .ball {
     border-radius: 10em;
     position: absolute;
-    background: black;
+    background: white;
     margin: -2em -2em;
     height: 4em;
     width: 4em;
+}
+
+body.center #center-line {
+    border: 0.5em white dashed;
+    position: absolute;
+    height: 100%;
+    left: 50%;
+    width: 0;
+    top: 0;
 }

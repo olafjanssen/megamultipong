@@ -23,13 +23,19 @@
 
         window.addEventListener('load', function () {
             var settings = {n: parseInt(getQueryVariable('n')), i:parseInt(getQueryVariable('i'))};
-            multipong.init(settings.n, settings.i);
+            if (isNaN(settings.n) || isNaN(settings.i)) {
+                document.body.classList.add('menu');
+            } else {
+                multipong.init(settings.n, settings.i);
+            }
         });
     </script>
 </head>
 <body>
+<h1>mega<br>multi-device<br>multi-ball<br>multi<br>pong</h1>
 <div id="left-paddle" class="paddle"></div>
 <div id="right-paddle" class="paddle"></div>
+<div id="center-line"></div>
 <div id="balls">
 </div>
 </body>

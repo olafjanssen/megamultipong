@@ -188,7 +188,7 @@ var multipong = (function (chain) {
             document.body.classList.add('right');
         }
         if (isCenter) {
-            document.body.classList.add('isCenter');
+            document.body.classList.add('center');
         }
 
         if (isLeft || isRight) {
