@@ -20,8 +20,9 @@ var multipong = (function (chain) {
         isRight = false,
         isMiddle = false,
         isCenter = false,
-        frameInterval = 1000 / 60,
+    //frameInterval = 1000 / 60,
         interval,
+        time,
 
         mouseLeft = 0,
         mouseTop = 0,
@@ -43,10 +44,13 @@ var multipong = (function (chain) {
     }
 
     function gameLoop() {
+        var newTime = new Date().getTime(),
+            delay = newTime - time;
+        time = newTime;
         balls.forEach(function (ball) {
             // update ball object
-            ball.left += Math.cos(ball.angle) * ball.speed;
-            ball.top += Math.sin(ball.angle) * ball.speed;
+            ball.left += Math.cos(ball.angle) * ball.speed * delay;
+            ball.top += Math.sin(ball.angle) * ball.speed * delay;
 
             var ballElement = document.getElementById('ball' + ball.id);
             if (!ballElement) {
@@ -97,14 +101,14 @@ var multipong = (function (chain) {
 
             if (isRight && ballRect.right > rightRect.left && dx > 0 && ballRect.top < rightRect.bottom && ballRect.bottom > rightRect.top) {
                 dx = -Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
-                ball.speed += 2;
+                ball.speed += 1.0 / 16.0;
                 hitPaddleSound.play();
                 addBall();
             }
 
             if (isLeft && ballRect.left < leftRect.right && dx < 0 && ballRect.top < leftRect.bottom && ballRect.bottom > leftRect.top) {
                 dx = Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
-                ball.speed += 2;
+                ball.speed += 1.0 / 16.0;
                 hitPaddleSound.play();
                 addBall();
             }
@@ -134,7 +138,7 @@ var multipong = (function (chain) {
         if (!newBall) {
             newBall = {
                 id: (ballId++) % 10000,
-                speed: 10,
+                speed: 10.0 / 16.0,
                 left: startPosition.left,
                 top: startPosition.top,
                 angle: Math.PI * Math.round(Math.random()) + (Math.random() - 0.5) * 30 / 180 * Math.PI
@@ -164,7 +168,6 @@ var multipong = (function (chain) {
 
         scoreSound = {
             audio: document.getElementById('score-sound'), play: function () {
-                console.log(this.audio);
                 this.audio.play()
             }
         };
@@ -235,7 +238,7 @@ var multipong = (function (chain) {
 
             updateScore();
             startSound.play();
-
+            time = new Date().getTime();
             // start the game loop
             interval = requestAnimationFrame(gameLoop);
         }, 3000);
@@ -278,7 +281,6 @@ var multipong = (function (chain) {
     }
 
     function handleIncomingMessage(data) {
-        console.log(data);
         if (data.action === 'restart') {
             updateScore(data.score);
             restart();
