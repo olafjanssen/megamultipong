@@ -20,6 +20,7 @@ var multipong = (function (chain) {
         isRight = false,
         isCenter = false,
         frameInterval = 1000 / 60,
+        interval,
 
         mouseLeft = 0,
         mouseTop = 0,
@@ -204,7 +205,7 @@ var multipong = (function (chain) {
         restart();
 
         // start the game loop
-        setInterval(function () {
+        interval = setInterval(function () {
             gameLoop();
         }, frameInterval);
         updateScore();
@@ -224,7 +225,9 @@ var multipong = (function (chain) {
         }
         document.getElementById('score').innerHTML = '<span>' + score.left + '</span><span>' + score.right + '</span>';
 
-        if (score.left == maxScore || score.right == maxScore) {
+        if (score.left === maxScore || score.right === maxScore) {
+            document.getElementById('message').innerText = (score.left === maxScore?'left' : 'right') + ' wins';
+            clearInterval(interval);
             gameOverSound.play();
         }
     }
