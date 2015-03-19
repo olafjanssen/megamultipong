@@ -1,0 +1,30 @@
+.paddle {
+    position: absolute;
+    background: black;
+    margin-top: -2.5%;
+    display: none;
+    height: 10%;
+    width: 2em;
+    top: 4em;
+}
+
+body.left #left-paddle {
+    display: block;
+    left: 2em;
+}
+
+body.right #right-paddle {
+    display: block;
+    right: 2em;
+}
+
+body.play #ball {
+    border-radius: 10em;
+    position: absolute;
+    background: black;
+    margin: -2em -2em;
+    height: 4em;
+    width: 4em;
+    left: 50%;
+    top: 50%;
+}

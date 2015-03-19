@@ -1,0 +1,20 @@
+{
+  "name": "multipong",
+  "version": "0.0.0",
+  "authors": [
+    "Olaf Janssen <o.t.a.janssen@gmail.com>"
+  ],
+  "description": "Play pong across multiple devices",
+  "main": "index.html",
+  "keywords": [
+    "pong"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+}
