@@ -4,7 +4,7 @@ var multipong = (function (chain) {
     var devices = 0,
         deviceIndex = 0,
 
-        ball = {},
+        balls = [],
 
         isLeft = false,
         isRight = false,
@@ -17,8 +17,7 @@ var multipong = (function (chain) {
         mouseTop = 0,
 
         leftElement,
-        rightElement,
-        ballElement;
+        rightElement;
 
     function toRelative(left, top) {
         return {left: left / window.innerWidth, top: top / window.innerHeight};
@@ -28,91 +27,118 @@ var multipong = (function (chain) {
         return {left: window.innerWidth * left, top: window.innerHeight * top};
     }
 
+    function sendMessage(pos, message) {
+        //chain.send('multipong', pos, message);
+        handleIncomingMessage(message);
+    }
+
     function gameLoop() {
         frame++;
 
-        // update ball object
-        ball.left += Math.cos(ball.angle) * ball.speed;
-        ball.top += Math.sin(ball.angle) * ball.speed;
+        if (balls.forEach(function (ball, index) {
+                // update ball object
+                ball.left += Math.cos(ball.angle) * ball.speed;
+                ball.top += Math.sin(ball.angle) * ball.speed;
 
-        if (frame > 5) {
-            var ballElement = document.getElementById('ball' + 1);
-            if (!ballElement) {
-                return;
-            }
-            // check edge collision
-            var ballRect = ballElement.getBoundingClientRect();
-            var dx = Math.cos(ball.angle),
-                dy = Math.sin(ball.angle);
-
-            if (ballRect.top < 0 && dy < 0) {
-                dy = Math.abs(dy);
-            } else if (ballRect.bottom > window.innerHeight && dy > 0) {
-                dy = -Math.abs(dy);
-            } else if (ballRect.right < 0) {
-                ballElement.parentNode.removeChild(ballElement);
-                clearInterval(interval);
-                document.body.classList.remove('play');
-                if (isLeft) {
-                    chain.send('multipong', Math.floor(devices / 2), {action: 'restart', ball: ball});
-                } else {
-                    var relPos = toRelative(ball.left, ball.top);
-                    var newBall = ball;
-                    newBall.left = 1;
-                    newBall.top = relPos.top;
-                    chain.send('multipong', deviceIndex - 1, {action: 'enter', ball: newBall});
+                var ballElement = document.getElementById('ball' + index);
+                if (!ballElement) {
+                    return;
                 }
-            } else if (ballRect.left > window.innerWidth) {
-                ballElement.parentNode.removeChild(ballElement);
-                clearInterval(interval);
-                document.body.classList.remove('play');
-                if (isRight) {
-                    chain.send('multipong', Math.floor(devices / 2), {action: 'restart', ball: ball});
-                } else {
-                    var relPos = toRelative(ball.left, ball.top);
-                    var newBall = ball;
-                    newBall.left = 0;
-                    newBall.top = relPos.top;
-                    chain.send('multipong', deviceIndex + 1, {action: 'enter', ball: newBall});
+                // check edge collision
+                var ballRect = ballElement.getBoundingClientRect();
+                var dx = Math.cos(ball.angle),
+                    dy = Math.sin(ball.angle);
+
+                if (ballRect.top < 0 && dy < 0) {
+                    dy = Math.abs(dy);
+                } else if (ballRect.bottom > window.innerHeight && dy > 0) {
+                    dy = -Math.abs(dy);
+                } else if (ballRect.right < 0) {
+                    balls.splice(balls.indexOf(ball), 1);
+                    ballElement.parentNode.removeChild(ballElement);
+                    clearInterval(interval);
+                    document.body.classList.remove('play');
+                    if (isLeft) {
+                        sendMessage(Math.floor(devices / 2), {action: 'restart', ball: ball});
+                    } else {
+                        var relPos = toRelative(ball.left, ball.top);
+                        var newBall = ball;
+                        newBall.left = 1;
+                        newBall.top = relPos.top;
+                        sendMessage(deviceIndex - 1, {action: 'enter', ball: newBall});
+                    }
+                    return;
+                } else if (ballRect.left > window.innerWidth) {
+                    balls.splice(balls.indexOf(ball), 1);
+                    ballElement.parentNode.removeChild(ballElement);
+                    clearInterval(interval);
+                    document.body.classList.remove('play');
+                    if (isRight) {
+                        sendMessage(Math.floor(devices / 2), {action: 'restart', ball: ball});
+                    } else {
+                        var relPos = toRelative(ball.left, ball.top);
+                        var newBall = ball;
+                        newBall.left = 0;
+                        newBall.top = relPos.top;
+                        sendMessage(deviceIndex + 1, {action: 'enter', ball: newBall});
+                    }
+                    return;
                 }
-            }
 
-            // check paddle collision
-            var leftRect = leftElement.getBoundingClientRect(),
-                rightRect = rightElement.getBoundingClientRect();
+                // check paddle collision
+                var leftRect = leftElement.getBoundingClientRect(),
+                    rightRect = rightElement.getBoundingClientRect();
 
-            if (isRight && ballRect.right > rightRect.left && dx > 0 && ballRect.top < rightRect.bottom && ballRect.bottom > rightRect.top) {
-                dx = -Math.abs(dx + (Math.random() - 0.5) * 30/180*Math.PI );
-                ball.speed += 2;
-            }
+                if (isRight && ballRect.right > rightRect.left && dx > 0 && ballRect.top < rightRect.bottom && ballRect.bottom > rightRect.top) {
+                    dx = -Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
+                    ball.speed += 2;
+                    addBall();
+                }
 
-            if (isLeft && ballRect.left < leftRect.right && dx < 0 && ballRect.top < leftRect.bottom && ballRect.bottom > leftRect.top) {
-                dx = Math.abs(dx + (Math.random() - 0.5) * 30/180*Math.PI);
-                ball.speed += 2;
-            }
+                if (isLeft && ballRect.left < leftRect.right && dx < 0 && ballRect.top < leftRect.bottom && ballRect.bottom > leftRect.top) {
+                    dx = Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
+                    ball.speed += 2;
+                    addBall();
+                }
 
-            // update ball angle
-            ball.angle = Math.atan2(dy, dx);
+                // update ball angle
+                ball.angle = Math.atan2(dy, dx);
+                // update positions in css
+                if (ballElement) {
+                    ballElement.style.left = ball.left + 'px';
+                    ballElement.style.top = ball.top + 'px';
+                }
+            }));
+    }
+
+    function addBall(newBall) {
+        var newElement = document.createElement('div'),
+            startPosition = toAbsolute(0.5, 0.5);
+
+        //adds a new ball
+        if (!newBall) {
+            newBall = {
+                speed: 10,
+                left: startPosition.left,
+                top: startPosition.top,
+                angle: Math.PI*Math.round(Math.random()) + (Math.random() - 0.5) * 30 / 180 * Math.PI
+            };
         }
-        // update positions in css
-        if (ballElement) {
-            ballElement.style.left = ball.left + 'px';
-            ballElement.style.top = ball.top + 'px';
-        }
 
+        newElement.style.left = newBall.left + 'px';
+        newElement.style.top = newBall.top + 'px';
+        newElement.id = 'ball' + balls.length;
+        newElement.classList.add('ball');
+        document.getElementById('balls').appendChild(newElement);
+
+        balls.push(newBall);
     }
 
     function restart() {
         if (isCenter) {
-            // adds a new ball
-            var newElement = document.createElement('div');
-            newElement.id = 'ball' + 1;
-            newElement.classList.add('ball');
-            document.getElementById('balls').appendChild(newElement);
+            console.log('restart');
 
-
-            var startPosition = toAbsolute(0.5, 0.5);
-            ball = {speed: 10, left: startPosition.left, top: startPosition.top, angle: -30 / 180 * Math.PI};
+            addBall();
 
             frame = 0;
             interval = setInterval(function () {
@@ -123,11 +149,13 @@ var multipong = (function (chain) {
     }
 
     function enter(newBall) {
-        ball = newBall;
+        balls.push(newBall);
 
         // adds a new ball
         var newElement = document.createElement('div');
-        newElement.id = 'ball' + 1;
+        newElement.style.left = newBall.left + 'px';
+        newElement.style.top = newBall.top + 'px';
+        newElement.id = 'ball' + balls.length;
         newElement.classList.add('ball');
         document.getElementById('balls').appendChild(newElement);
 
@@ -144,7 +172,6 @@ var multipong = (function (chain) {
 
         leftElement = document.getElementById('left-paddle');
         rightElement = document.getElementById('right-paddle');
-        ballElement = document.getElementById('ball');
 
         devices = _devices;
         deviceIndex = _deviceIndex;
@@ -180,19 +207,23 @@ var multipong = (function (chain) {
 
         restart();
 
-        chain.listen('multipong', deviceIndex, function (data) {
-            if (data.action === 'restart') {
-                restart();
-            }
-            if (data.action === 'enter') {
-                var newBall = data.ball,
-                    absolute = toAbsolute(data.ball.left, data.ball.top);
+        //chain.listen('multipong', deviceIndex, function (data) {
+        //});
+    }
 
-                newBall.left = absolute.left;
-                newBall.top = absolute.top;
-                enter(newBall);
-            }
-        });
+    function handleIncomingMessage(data) {
+        console.log(data);
+        if (data.action === 'restart') {
+            restart();
+        }
+        if (data.action === 'enter') {
+            var newBall = data.ball,
+                absolute = toAbsolute(data.ball.left, data.ball.top);
+
+            newBall.left = absolute.left;
+            newBall.top = absolute.top;
+            enter(newBall);
+        }
     }
 
     return {

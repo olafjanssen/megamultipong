@@ -11,8 +11,8 @@
 var chain = (function () {
     'use strict';
 
-    //var channel = new HydnaChannel('http://fhict-s4.hydna.net', 'rw'),
-    //    position = 0;
+    var channel = new HydnaChannel('http://fhict-s4.hydna.net', 'rw'),
+        position = 0;
 
     return {
         /**
@@ -23,17 +23,15 @@ var chain = (function () {
          * @param callback  The function to be called when it's the users' turn in the chain.
          */
         listen: function (station, pos, callback) {
-            //position = pos;
-            //
-            //// listen to messages and respond if the current link in the chain is that of the user
-            //channel.onmessage = function (event) {
-            //    var data = JSON.parse(event.data);
-            //    if (data.station === station && data.position === pos) {
-            //    //    console.log('callback called', data, pos, data.data);
-            //        console.log('callback', data.data);
-            //        callback(data.data);
-            //    }
-            //};
+            position = pos;
+
+            // listen to messages and respond if the current link in the chain is that of the user
+            channel.onmessage = function (event) {
+                var data = JSON.parse(event.data);
+                if (data.station === station && data.position === pos) {
+                    callback(data.data);
+                }
+            };
         },
 
         /**
@@ -42,8 +40,7 @@ var chain = (function () {
          */
         send: function (station, pos, data) {
             var o = {station: station, position: pos, data: data};
-            //channel.send(JSON.stringify(o));
-            this.listen(station, pos, JSON.stringify(o));
+            channel.send(JSON.stringify(o));
         }
     };
 
