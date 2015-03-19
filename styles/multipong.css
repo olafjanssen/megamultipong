@@ -54,7 +54,7 @@ body.right #right-paddle {
     right: 2em;
 }
 
-body .ball {
+body.playing .ball {
     border-radius: 10em;
     position: absolute;
     background: white;
@@ -63,7 +63,7 @@ body .ball {
     width: 4em;
 }
 
-body.center #center-line {
+body.center.playing #center-line {
     border: 0.5em white dashed;
     position: absolute;
     height: 100%;

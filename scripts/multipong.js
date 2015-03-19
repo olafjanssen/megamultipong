@@ -204,12 +204,17 @@ var multipong = (function (chain) {
 
         restart();
 
-        // start the game loop
-        interval = setInterval(function () {
-            gameLoop();
-        }, frameInterval);
-        updateScore();
-        startSound.play();
+        document.getElementById('message').innerText = isCenter? 'starting' : 'ready?';
+        setTimeout(function(){
+            document.getElementById('message').innerText = '';
+            document.body.classList.add('playing');
+            // start the game loop
+            interval = setInterval(function () {
+                gameLoop();
+            }, frameInterval);
+            updateScore();
+            startSound.play();
+        }, 3000);
 
     }
 
@@ -226,6 +231,7 @@ var multipong = (function (chain) {
         document.getElementById('score').innerHTML = '<span>' + score.left + '</span><span>' + score.right + '</span>';
 
         if (score.left === maxScore || score.right === maxScore) {
+            document.body.classList.remove('playing');
             document.getElementById('message').innerText = (score.left === maxScore?'left' : 'right') + ' wins';
             clearInterval(interval);
             gameOverSound.play();
