@@ -5,6 +5,8 @@ var multipong = (function (chain) {
         deviceIndex = 0,
 
         balls = [],
+        ballId = 0,
+        maxBalls = 3,
 
         isLeft = false,
         isRight = false,
@@ -35,12 +37,12 @@ var multipong = (function (chain) {
     function gameLoop() {
         frame++;
 
-        if (balls.forEach(function (ball, index) {
+        if (balls.forEach(function (ball) {
                 // update ball object
                 ball.left += Math.cos(ball.angle) * ball.speed;
                 ball.top += Math.sin(ball.angle) * ball.speed;
 
-                var ballElement = document.getElementById('ball' + index);
+                var ballElement = document.getElementById('ball' + ball.id);
                 if (!ballElement) {
                     return;
                 }
@@ -112,12 +114,18 @@ var multipong = (function (chain) {
     }
 
     function addBall(newBall) {
+        // sorry there is a maximum number of balls
+        if (balls.length > maxBalls) {
+            return;
+        }
+
         var newElement = document.createElement('div'),
             startPosition = toAbsolute(0.5, 0.5);
 
         //adds a new ball
         if (!newBall) {
             newBall = {
+                id: (ballId++)%10000,
                 speed: 10,
                 left: startPosition.left,
                 top: startPosition.top,
@@ -127,7 +135,7 @@ var multipong = (function (chain) {
 
         newElement.style.left = newBall.left + 'px';
         newElement.style.top = newBall.top + 'px';
-        newElement.id = 'ball' + balls.length;
+        newElement.id = 'ball' + newBall.id;
         newElement.classList.add('ball');
         document.getElementById('balls').appendChild(newElement);
 
@@ -149,15 +157,7 @@ var multipong = (function (chain) {
     }
 
     function enter(newBall) {
-        balls.push(newBall);
-
-        // adds a new ball
-        var newElement = document.createElement('div');
-        newElement.style.left = newBall.left + 'px';
-        newElement.style.top = newBall.top + 'px';
-        newElement.id = 'ball' + balls.length;
-        newElement.classList.add('ball');
-        document.getElementById('balls').appendChild(newElement);
+        addBall(newBall);
 
         clearInterval(interval);
 
