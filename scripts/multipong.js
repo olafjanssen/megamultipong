@@ -8,7 +8,7 @@ var multipong = (function (chain) {
 
         balls = [],
         ballId = 0,
-        maxBalls = 3,
+        maxBalls = 1,
 
         scoreSound,
         hitPaddleSound,
@@ -27,7 +27,8 @@ var multipong = (function (chain) {
         mouseTop = 0,
 
         leftElement,
-        rightElement;
+        rightElement,
+        middleElement;
 
     function toRelative(left, top) {
         return {left: left / window.innerWidth, top: top / window.innerHeight};
@@ -104,9 +105,11 @@ var multipong = (function (chain) {
 
             // check paddle collision
             var leftRect = leftElement.getBoundingClientRect(),
-                rightRect = rightElement.getBoundingClientRect();
+                rightRect = rightElement.getBoundingClientRect(),
+                middleRect = middleElement.getBoundingClientRect();
 
             if (isRight && ballRect.right > rightRect.left && dx > 0 && ballRect.top < rightRect.bottom && ballRect.bottom > rightRect.top) {
+                ball.left = rightRect.right - ballRect.width/2;
                 dx = -Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
                 ball.speed += 1.0 / 16.0;
                 hitPaddleSound.play();
@@ -114,10 +117,18 @@ var multipong = (function (chain) {
             }
 
             if (isLeft && ballRect.left < leftRect.right && dx < 0 && ballRect.top < leftRect.bottom && ballRect.bottom > leftRect.top) {
+                ball.left = leftRect.right + ballRect.width/2;
                 dx = Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
                 ball.speed += 1.0 / 16.0;
                 hitPaddleSound.play();
                 addBall();
+            }
+
+            if (isMiddle && ballRect.left < middleRect.right && ballRect.right > middleRect.left && ballRect.top < middleRect.bottom && ballRect.bottom > middleRect.top) {
+                ball.left = dx > 0 ? middleRect.left - ballRect.width / 2 : middleRect.right + ballRect.width / 2;
+                dx = -dx + (Math.random() - 0.5) * 30 / 180 * Math.PI;
+                ball.speed += 1.0 / 16.0;
+                hitPaddleSound.play();
             }
 
             // update ball angle
@@ -139,16 +150,17 @@ var multipong = (function (chain) {
         }
 
         var newElement = document.createElement('div'),
-            startPosition = toAbsolute(isRight && isCenter ? 0 : 0.5, 0.5);
+            angle = Math.PI * Math.round(Math.random()) + (Math.random() - 0.5) * 30 / 180 * Math.PI,
+            startPosition = toAbsolute(isRight && isCenter ? 0 : Math.cos(angle) > 0 ? 0.75 : 0.25, 0.5);
 
         //adds a new ball
         if (!newBall) {
             newBall = {
                 id: (ballId++) % 10000,
+                angle: angle,
                 speed: 10.0 / 16.0,
                 left: startPosition.left,
-                top: startPosition.top,
-                angle: Math.PI * Math.round(Math.random()) + (Math.random() - 0.5) * 30 / 180 * Math.PI
+                top: startPosition.top
             };
         }
 
@@ -191,6 +203,7 @@ var multipong = (function (chain) {
 
         leftElement = document.getElementById('left-paddle');
         rightElement = document.getElementById('right-paddle');
+        middleElement = document.getElementById('middle-paddle');
 
         devices = _devices;
         deviceIndex = _deviceIndex;
@@ -198,6 +211,7 @@ var multipong = (function (chain) {
         isLeft = deviceIndex === 0;
         isRight = deviceIndex === devices - 1;
         isCenter = deviceIndex === Math.floor(devices / 2);
+        isMiddle = !isLeft && !isRight;// && !isCenter;
 
         // setting the body styles
         if (isLeft) {
@@ -209,10 +223,12 @@ var multipong = (function (chain) {
         if (isCenter) {
             document.body.classList.add('center');
         }
+        if (isMiddle) {
+            document.body.classList.add('middle');
+        }
 
-        if (isLeft || isRight) {
+        if (isLeft || isRight || isMiddle) {
             document.addEventListener('mousemove', function (event) {
-                mouseLeft = event.clientX;
                 mouseTop = event.clientY;
 
                 if (isLeft) {
@@ -220,6 +236,9 @@ var multipong = (function (chain) {
                 }
                 if (isRight) {
                     rightElement.style.top = mouseTop + 'px';
+                }
+                if (isMiddle) {
+                    middleElement.style.top = mouseTop + 'px';
                 }
             })
         }

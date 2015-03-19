@@ -45,6 +45,11 @@ body.left #left-paddle {
     left: 2em;
 }
 
+body.middle #middle-paddle {
+    display: block;
+    left: 50%;
+}
+
 body.right #right-paddle {
     display: block;
     right: 2em;
