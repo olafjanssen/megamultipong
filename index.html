@@ -3,61 +3,32 @@
 <head>
     <meta charset="utf-8">
     <title>multipong</title>
+    <link rel="stylesheet" href="styles/reset.css">
     <link rel="stylesheet" href="styles/multipong.css">
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/hydna/1.0.1/hydna.min.js"></script>
-    <script type="text/javascript" src="scripts/chain.js"></script>
-    <script type="text/javascript" src="scripts/multipong.js"></script>
     <script>
-
-        function getQueryVariable(variable) {
-            var query = window.location.search.substring(1);
-            var vars = query.split('&');
-            for (var i = 0; i < vars.length; i++) {
-                var pair = vars[i].split('=');
-                if (decodeURIComponent(pair[0]) == variable) {
-                    return decodeURIComponent(pair[1]);
+        window.addEventListener('load', function(){
+            document.getElementById('devices-input').addEventListener('change', function(){
+                var posInput = document.getElementById('position-input');
+                posInput.setAttribute('max', this.value);
+                if (posInput.value === '') {
+                    posInput.value = 1;
                 }
-            }
-        }
+            })
 
-        window.addEventListener('load', function () {
-            var settings = {n: parseInt(getQueryVariable('n')), i: parseInt(getQueryVariable('i'))};
-            if (isNaN(settings.n) || isNaN(settings.i)) {
-                document.body.classList.add('menu');
-            } else {
-                multipong.init(settings.n, settings.i);
-            }
+            document.getElementById('start-form').addEventListener('submit', function(event){
+                event.preventDefault();
+                location.assign('game.html?n=' + document.getElementById('devices-input').value + '&i=' + document.getElementById('position-input').value);
+                return false;
+            });
         });
     </script>
 </head>
 <body>
-<h1>mega<br>multi-device<br>multi-ball<br>multi<br>pong</h1>
-
-<div id="left-paddle" class="paddle"></div>
-<div id="right-paddle" class="paddle"></div>
-<div id="center-line"></div>
-<div id="score"></div>
-<div id="balls">
-</div>
-<div>
-    <audio id="score-sound">
-        <source type="audio/wav" src="sounds/score.wav">
-    </audio>
-    <audio id="hit-paddle-sound">
-        <source type="audio/wav" src="sounds/hit-paddle.wav">
-    </audio>
-    <audio id="hit-wall-sound">
-        <source type="audio/wav" src="sounds/hit-wall.wav">
-    </audio>
-    <audio id="game-over-sound">
-        <source type="audio/wav" src="sounds/game-over.wav">
-    </audio>
-    <audio id="start-sound">
-        <source type="audio/wav" src="sounds/start.wav">
-    </audio>
-</div>
-
-<h2 id="message" class="blink"></h2>
-
+<h1 class="blink">mega multi pong</h1>
+<form id="start-form">
+    <label for="devices-input">Number of devices:</label><input type="number" placeholder="#" id="devices-input" required min="1" step="1">
+    <label for="position-input">Your position:</label><input type="number" placeholder="#" id="position-input" required min="1" step="1">
+    <button type="submit" id="play-button">play</button>
+</form>
 </body>
 </html>

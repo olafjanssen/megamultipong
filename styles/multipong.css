@@ -20,14 +20,10 @@ body {
     background: black;
 }
 
-body.menu h1 {
-    display: block;
-}
-
 h1 {
     text-align: center;
+    margin: 1em 0;
     font-size: 6em;
-    display: none;
     color: white;
 }
 
@@ -100,4 +96,46 @@ body.center.playing #center-line {
     80% {
         visibility: hidden;
     }
+}
+
+
+
+
+#start-form {
+    text-align: center;
+}
+
+label {
+    font-size: 2em;
+    color: white;
+}
+
+input {
+    border: 0.1em dashed white;
+    margin: 0 auto 1em;
+    text-align: center;
+    color: white;
+    background: black;
+    font-size: 2em;
+    display: block;
+    width: 3em;
+}
+
+#play-button {
+    font-family: inherit;
+    background: white;
+    border: none;
+    font-size: 2em;
+    color: black;
+    width: 4em;
+}
+
+#play-button:hover {
+    background: black;
+    color: white;
+}
+
+#play-button:active {
+    background: black;
+    color: red;
 }
