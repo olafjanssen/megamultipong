@@ -1,4 +1,4 @@
-/* global chain */
+/* global chain Audio */
 var multipong = (function (chain) {
 
     var devices = 0,
@@ -8,6 +8,10 @@ var multipong = (function (chain) {
         balls = [],
         ballId = 0,
         maxBalls = 3,
+
+        scoreSound,
+        hitPaddleSound,
+        hitWallSound,
 
         isLeft = false,
         isRight = false,
@@ -50,8 +54,10 @@ var multipong = (function (chain) {
 
                 if (ballRect.top < 0 && dy < 0) {
                     dy = Math.abs(dy);
+                    hitWallSound.play();
                 } else if (ballRect.bottom > window.innerHeight && dy > 0) {
                     dy = -Math.abs(dy);
+                    hitWallSound.play();
                 } else if (ballRect.right < 0) {
                     balls.splice(balls.indexOf(ball), 1);
                     ballElement.parentNode.removeChild(ballElement);
@@ -87,12 +93,14 @@ var multipong = (function (chain) {
                 if (isRight && ballRect.right > rightRect.left && dx > 0 && ballRect.top < rightRect.bottom && ballRect.bottom > rightRect.top) {
                     dx = -Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
                     ball.speed += 2;
+                    hitPaddleSound.play();
                     addBall();
                 }
 
                 if (isLeft && ballRect.left < leftRect.right && dx < 0 && ballRect.top < leftRect.bottom && ballRect.bottom > leftRect.top) {
                     dx = Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
                     ball.speed += 2;
+                    hitPaddleSound.play();
                     addBall();
                 }
 
@@ -149,6 +157,10 @@ var multipong = (function (chain) {
 
     function init(_devices, _deviceIndex) {
 
+        scoreSound = {audio: document.getElementById('score-sound'), play: function(){ console.log(this.audio); this.audio.play()}};
+        hitPaddleSound = {audio: document.getElementById('hit-paddle-sound'), play: function(){ this.audio.play()}};
+        hitWallSound = {audio: document.getElementById('hit-wall-sound'), play: function(){ this.audio.play()}};
+
         leftElement = document.getElementById('left-paddle');
         rightElement = document.getElementById('right-paddle');
 
@@ -192,15 +204,15 @@ var multipong = (function (chain) {
         }, frameInterval);
         updateScore();
 
-        //chain.listen('multipong', deviceIndex, function (data) {
-        //});
     }
 
     function updateScore(side) {
         if (side === 'left') {
             score.left++;
+            scoreSound.play();
         } else if (side === 'right') {
             score.right++;
+            scoreSound.play();
         } else {
             score = {left: 0, right: 0};
         }

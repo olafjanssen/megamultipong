@@ -22,7 +22,7 @@
         }
 
         window.addEventListener('load', function () {
-            var settings = {n: parseInt(getQueryVariable('n')), i:parseInt(getQueryVariable('i'))};
+            var settings = {n: parseInt(getQueryVariable('n')), i: parseInt(getQueryVariable('i'))};
             if (isNaN(settings.n) || isNaN(settings.i)) {
                 document.body.classList.add('menu');
             } else {
@@ -33,11 +33,24 @@
 </head>
 <body>
 <h1>mega<br>multi-device<br>multi-ball<br>multi<br>pong</h1>
+
 <div id="left-paddle" class="paddle"></div>
 <div id="right-paddle" class="paddle"></div>
 <div id="center-line"></div>
 <div id="score"></div>
 <div id="balls">
 </div>
+<div>
+    <audio id="score-sound">
+        <source type="audio/wav" src="sounds/score.wav">
+    </audio>
+    <audio id="hit-paddle-sound">
+        <source type="audio/wav" src="sounds/hit-paddle.wav">
+    </audio>
+    <audio id="hit-wall-sound">
+        <source type="audio/wav" src="sounds/hit-wall.wav">
+    </audio>
+</div>
+
 </body>
 </html>
