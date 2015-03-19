@@ -148,7 +148,7 @@ var multipong = (function (chain) {
 
         var newElement = document.createElement('div'),
             angle = Math.PI * Math.round(Math.random()) + (Math.random() - 0.5) * 30 / 180 * Math.PI,
-            startPosition = toAbsolute(isRight && isCenter ? 0 : Math.cos(angle) > 0 ? 0.75 : 0.25, 0.5);
+            startPosition = toAbsolute(isRight && isCenter && !isLeft ? 0 : isRight && isLeft ? 0.5 : Math.cos(angle) > 0 ? 0.75 : 0.25, 0.5);
 
         //adds a new ball
         if (!newBall) {

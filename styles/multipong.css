@@ -64,6 +64,7 @@ body.playing .ball {
     width: 4em;
 }
 
+body.center.playing.right.left #center-line,
 body.center.playing:not(.right) #center-line {
     border: 0.5em white dashed;
     position: absolute;
