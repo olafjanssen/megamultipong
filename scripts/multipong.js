@@ -12,8 +12,6 @@ var multipong = (function (chain) {
         isRight = false,
         isCenter = false,
         frameInterval = 1000 / 60,
-        frame,
-        interval,
 
         mouseLeft = 0,
         mouseTop = 0,
@@ -35,8 +33,6 @@ var multipong = (function (chain) {
     }
 
     function gameLoop() {
-        frame++;
-
         if (balls.forEach(function (ball) {
                 // update ball object
                 ball.left += Math.cos(ball.angle) * ball.speed;
@@ -189,8 +185,8 @@ var multipong = (function (chain) {
 
         restart();
 
-        frame = 0;
-        interval = setInterval(function () {
+        // start the game loop
+        setInterval(function () {
             gameLoop();
         }, frameInterval);
 
