@@ -296,9 +296,9 @@ var multipong = (function (chain) {
 
     function gameOver(winner) {
         document.body.classList.remove('playing');
-        if ((isLeft && winner === 'left') || (isRight && winner) === 'right') {
+        if ((isLeft && !isCenter && winner === 'left') || (isRight && !isLeft && winner) === 'right') {
             setMessage('you win!');
-        } else if ((isLeft && winner !== 'left') || (isRight && winner !== 'right')) {
+        } else if ((isLeft && !isCenter && winner !== 'left') || (isRight && !isLeft && winner !== 'right')) {
             setMessage('you lose!');
         } else {
             setMessage('game over');
