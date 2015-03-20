@@ -106,7 +106,7 @@ var multipong = (function (chain) {
                 middleRect = middleElement.getBoundingClientRect();
 
             if (isRight && ballRect.right > rightRect.left && dx > 0 && ballRect.top < rightRect.bottom && ballRect.bottom > rightRect.top) {
-                ball.left = rightRect.right - ballRect.width / 2;
+                ball.left = rightRect.left - ballRect.width / 2;
                 dx = -Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
                 ball.speed += 1.0 / 16.0;
                 hitPaddleSound.play();
@@ -131,9 +131,7 @@ var multipong = (function (chain) {
             // update ball angle
             ball.angle = Math.atan2(dy, dx);
             // update positions in css
-            if (ballElement) {
-                ballElement.style.transform = 'translate(' + ball.left + 'px, ' + ball.top + 'px)';
-            }
+            ballElement.style.transform = 'translate(' + ball.left + 'px, ' + ball.top + 'px)';
         });
 
         requestAnimationFrame(gameLoop);
