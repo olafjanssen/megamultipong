@@ -17,7 +17,13 @@
 body {
     -webkit-font-smoothing: none;
     font-family: edunline, monospace;
+    position: absolute;
     background: black;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
 }
 
 h1 {
@@ -36,8 +42,8 @@ h1 {
 
 #score span {
     display: inline-block;
-    margin: 0 0.25em;
     width: 2em;
+    margin: 0;
 }
 
 body.left #left-paddle {
