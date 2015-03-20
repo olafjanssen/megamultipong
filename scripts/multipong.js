@@ -188,7 +188,6 @@ var multipong = (function (chain) {
                 if (sound) {
                     this.audio.play()
                 }
-                ;
             }
         };
         hitPaddleSound = {
@@ -196,7 +195,6 @@ var multipong = (function (chain) {
                 if (sound) {
                     this.audio.play()
                 }
-                ;
             }
         };
         hitWallSound = {
@@ -204,7 +202,6 @@ var multipong = (function (chain) {
                 if (sound) {
                     this.audio.play()
                 }
-                ;
             }
         };
         startSound = {
@@ -212,7 +209,6 @@ var multipong = (function (chain) {
                 if (sound) {
                     this.audio.play()
                 }
-                ;
             }
         };
         gameOverSound = {
@@ -220,7 +216,6 @@ var multipong = (function (chain) {
                 if (sound) {
                     this.audio.play()
                 }
-                ;
             }
         };
 
