@@ -20,9 +20,7 @@ var multipong = (function (chain) {
         isRight = false,
         isMiddle = false,
         isCenter = false,
-        interval,
         time,
-        frame = 0,
 
         leftElement,
         rightElement,
@@ -48,7 +46,6 @@ var multipong = (function (chain) {
     }
 
     function gameLoop() {
-        console.log(frame++, balls.length);
         if (document.body.classList.contains('playing')) {
             requestAnimationFrame(gameLoop);
         }
@@ -57,6 +54,9 @@ var multipong = (function (chain) {
             delay = newTime - time;
         time = newTime;
         balls.forEach(function (ball) {
+            var relPos,
+                newBall;
+
             // update ball object
             ball.left += Math.cos(ball.angle) * ball.speed * delay;
             ball.top += Math.sin(ball.angle) * ball.speed * delay;
@@ -83,8 +83,8 @@ var multipong = (function (chain) {
                     scoreSound.play();
                     sendGlobalMessage({action: 'restart', score: 'right'});
                 } else {
-                    var relPos = toRelative(ball.left, ball.top);
-                    var newBall = ball;
+                    relPos = toRelative(ball.left, ball.top);
+                    newBall = ball;
                     newBall.left = 1;
                     newBall.top = relPos.top;
                     sendMessage(deviceIndex - 1, {action: 'enter', ball: newBall});
@@ -97,8 +97,8 @@ var multipong = (function (chain) {
                     scoreSound.play();
                     sendGlobalMessage({action: 'restart', score: 'left'});
                 } else {
-                    var relPos = toRelative(ball.left, ball.top);
-                    var newBall = ball;
+                    relPos = toRelative(ball.left, ball.top);
+                    newBall = ball;
                     newBall.left = 0;
                     newBall.top = relPos.top;
                     sendMessage(deviceIndex + 1, {action: 'enter', ball: newBall});
