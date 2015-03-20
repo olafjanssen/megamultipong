@@ -106,7 +106,7 @@ var multipong = (function (chain) {
                 middleRect = middleElement.getBoundingClientRect();
 
             if (isRight && ballRect.right > rightRect.left && dx > 0 && ballRect.top < rightRect.bottom && ballRect.bottom > rightRect.top) {
-                ball.left = rightRect.right - ballRect.width/2;
+                ball.left = rightRect.right - ballRect.width / 2;
                 dx = -Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
                 ball.speed += 1.0 / 16.0;
                 hitPaddleSound.play();
@@ -114,7 +114,7 @@ var multipong = (function (chain) {
             }
 
             if (isLeft && ballRect.left < leftRect.right && dx < 0 && ballRect.top < leftRect.bottom && ballRect.bottom > leftRect.top) {
-                ball.left = leftRect.right + ballRect.width/2;
+                ball.left = leftRect.right + ballRect.width / 2;
                 dx = Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
                 ball.speed += 1.0 / 16.0;
                 hitPaddleSound.play();
@@ -230,28 +230,28 @@ var multipong = (function (chain) {
                 var mouseTop = event.clientY;
 
                 if (isLeft) {
-                    leftElement.style.top = mouseTop + 'px';
+                    leftElement.style.transform = 'translateY(' + mouseTop + 'px)';
                 }
                 if (isRight) {
-                    rightElement.style.top = mouseTop + 'px';
+                    rightElement.style.transform = 'translateY(' + mouseTop + 'px)';
                 }
                 if (isMiddle) {
-                    middleElement.style.top = mouseTop + 'px';
+                    middleElement.style.transform = 'translateY(' + mouseTop + 'px)';
                 }
             });
             document.addEventListener('touchmove', function (event) {
-                    var touchobj = event.changedTouches[0],
-                        mouseTop = parseInt(touchobj.clientY);
+                var touchobj = event.changedTouches[0],
+                    mouseTop = parseInt(touchobj.clientY);
 
-                event.preventDefault()
+                event.preventDefault();
                 if (isLeft) {
-                    leftElement.style.top = mouseTop + 'px';
+                    leftElement.style.transform = 'translateY(' + mouseTop + 'px)';
                 }
                 if (isRight) {
-                    rightElement.style.top = mouseTop + 'px';
+                    rightElement.style.transform = 'translateY(' + mouseTop + 'px)';
                 }
                 if (isMiddle) {
-                    middleElement.style.top = mouseTop + 'px';
+                    middleElement.style.transform = 'translateY(' + mouseTop + 'px)';
                 }
             }, false);
         }
@@ -311,7 +311,7 @@ var multipong = (function (chain) {
 
     function handleIncomingMessage(data) {
         if (data.action === 'restart') {
-            if (data.score){
+            if (data.score) {
                 updateScore(data.score);
             }
             if (isCenter) {
