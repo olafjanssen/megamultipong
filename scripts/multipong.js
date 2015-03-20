@@ -8,7 +8,7 @@ var multipong = (function (chain) {
 
         balls = [],
         ballId = 0,
-        maxBalls = 1,
+        maxBalls = devices,
 
         scoreSound,
         hitPaddleSound,
@@ -110,7 +110,7 @@ var multipong = (function (chain) {
                 dx = -Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
                 ball.speed += 1.0 / 16.0;
                 hitPaddleSound.play();
-                addBall();
+                sendMessage(Math.floor(devices / 2), {action: 'restart'});
             }
 
             if (isLeft && ballRect.left < leftRect.right && dx < 0 && ballRect.top < leftRect.bottom && ballRect.bottom > leftRect.top) {
@@ -118,11 +118,11 @@ var multipong = (function (chain) {
                 dx = Math.abs(dx + (Math.random() - 0.5) * 30 / 180 * Math.PI);
                 ball.speed += 1.0 / 16.0;
                 hitPaddleSound.play();
-                addBall();
+                sendMessage(Math.floor(devices / 2), {action: 'restart'});
             }
 
             if (isMiddle && ballRect.left < middleRect.right && ballRect.right > middleRect.left && ballRect.top < middleRect.bottom && ballRect.bottom > middleRect.top) {
-                ball.left = dx > 0 ? middleRect.left - ballRect.width / 2 : middleRect.right + ballRect.width / 2;
+                ball.left = dx > 0 ? middleRect.left - ballRect.width : middleRect.right + ballRect.width / 2;
                 dx = -dx + (Math.random() - 0.5) * 30 / 180 * Math.PI;
                 ball.speed += 1.0 / 16.0;
                 hitPaddleSound.play();
@@ -208,7 +208,8 @@ var multipong = (function (chain) {
         isLeft = deviceIndex === 0;
         isRight = deviceIndex === devices - 1;
         isCenter = deviceIndex === Math.floor(devices / 2);
-        isMiddle = !isLeft && !isRight;// && !isCenter;
+        //isMiddle = !isLeft && !isRight;// && !isCenter;
+        isMiddle = true;
 
         // setting the body styles
         if (isLeft) {
@@ -310,7 +311,9 @@ var multipong = (function (chain) {
 
     function handleIncomingMessage(data) {
         if (data.action === 'restart') {
-            updateScore(data.score);
+            if (data.score){
+                updateScore(data.score);
+            }
             if (isCenter) {
                 addBall();
             }
