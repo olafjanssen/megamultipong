@@ -3,12 +3,14 @@ var multipong = (function (chain) {
 
     var devices = 0,
         deviceIndex = 0,
+        registered = [],
+        registerInterval,
         score = {left: 0, right: 0},
         maxScore = 20,
 
         balls = [],
         ballId = 0,
-        maxBalls = 5,
+        maxBalls = 2,
 
         scoreSound,
         hitPaddleSound,
@@ -136,7 +138,7 @@ var multipong = (function (chain) {
 
             if (isMiddle && ballRect.left < middleRect.right && ballRect.right > middleRect.left && ballRect.top < middleRect.bottom && ballRect.bottom > middleRect.top) {
                 ball.left = dx > 0 ? middleRect.left - ballRect.width : middleRect.right + ballRect.width / 2;
-                angleOffset = ((ballRect.top - middleRect.top + ballRect.height) / (middleRect.height + ballRect.height) - 0.5) * dx/Math.abs(dx)* -30 / 180 * Math.PI;
+                angleOffset = ((ballRect.top - middleRect.top + ballRect.height) / (middleRect.height + ballRect.height) - 0.5) * dx / Math.abs(dx) * -30 / 180 * Math.PI;
                 dx = -dx;
                 ball.speed += 1.0 / 16.0;
                 hitPaddleSound.play();
@@ -232,8 +234,7 @@ var multipong = (function (chain) {
         isLeft = deviceIndex === 0;
         isRight = deviceIndex === devices - 1;
         isCenter = deviceIndex === Math.floor(devices / 2);
-        //isMiddle = !isLeft && !isRight;// && !isCenter;
-        isMiddle = true;
+        isMiddle = !isLeft && !isRight;
 
         // setting the body styles
         if (isLeft) {
@@ -273,9 +274,18 @@ var multipong = (function (chain) {
 
         if (isCenter) {
             addBall();
+            setMessage('waiting');
         }
 
-        document.getElementById('message').innerText = isCenter ? 'starting' : 'ready?';
+        registerInterval = window.setInterval(function () {
+            sendMessage(Math.floor(devices / 2), {action: 'register', position: deviceIndex});
+        }, 3000);
+
+    }
+
+    function start() {
+        window.clearInterval(registerInterval);
+        setMessage(isCenter ? 'starting' : 'ready?');
         setTimeout(function () {
             document.getElementById('message').innerText = '';
             document.body.classList.add('playing');
@@ -286,7 +296,6 @@ var multipong = (function (chain) {
             // start the game loop
             requestAnimationFrame(gameLoop);
         }, 3000);
-
     }
 
     function updateScore(side) {
@@ -336,6 +345,15 @@ var multipong = (function (chain) {
             newBall.left = absolute.left;
             newBall.top = absolute.top;
             addBall(newBall);
+        } else if (data.action === 'register') {
+            if (registered.indexOf(data.position) === -1) {
+                registered.push(data.position);
+                if (registered.length === devices) {
+                    sendGlobalMessage({action: 'start'});
+                }
+            }
+        } else if (data.action === 'start') {
+            start();
         }
     }
 
