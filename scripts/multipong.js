@@ -132,8 +132,7 @@ var multipong = (function (chain) {
             ball.angle = Math.atan2(dy, dx);
             // update positions in css
             if (ballElement) {
-                ballElement.style.left = ball.left + 'px';
-                ballElement.style.top = ball.top + 'px';
+                ballElement.style.transform = 'translate(' + ball.left + 'px, ' + ball.top + 'px)';
             }
         });
 
@@ -161,8 +160,7 @@ var multipong = (function (chain) {
             };
         }
 
-        newElement.style.left = newBall.left + 'px';
-        newElement.style.top = newBall.top + 'px';
+        newElement.style.transform = 'translate(' + newBall.left + 'px, ' + newBall.top + 'px)';
         newElement.id = 'ball' + newBall.id;
         newElement.classList.add('ball');
         document.getElementById('balls').appendChild(newElement);
