@@ -28,7 +28,7 @@ var multipong = (function (chain) {
         rightElement,
         middleElement,
 
-        sound = false;
+        sound = true;
 
     function toRelative(left, top) {
         return {left: left / window.innerWidth, top: top / window.innerHeight};
