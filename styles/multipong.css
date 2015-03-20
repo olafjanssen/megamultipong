@@ -57,6 +57,7 @@ body.left #left-paddle {
 }
 
 body.middle #middle-paddle {
+    margin-left: -1em;
     display: block;
     left: 50%;
 }
@@ -87,6 +88,7 @@ body.playing .ball {
 body.center.playing.right.left #center-line,
 body.center.playing:not(.right) #center-line {
     border: 0.5em white dashed;
+    margin-left: -0.5em;
     position: absolute;
     height: 100%;
     left: 50%;
