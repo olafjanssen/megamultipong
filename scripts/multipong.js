@@ -221,35 +221,24 @@ var multipong = (function (chain) {
             document.body.classList.add('middle');
         }
 
+        function interactionHandler(event) {
+            var mouseTop = event.changedTouches ? parseFloat(event.changedTouches[0].clientY) : event.clientY;
+            event.preventDefault();
+
+            if (isLeft) {
+                leftElement.style.transform = 'translateY(' + mouseTop + 'px)';
+            }
+            if (isRight) {
+                rightElement.style.transform = 'translateY(' + mouseTop + 'px)';
+            }
+            if (isMiddle) {
+                middleElement.style.transform = 'translateY(' + mouseTop + 'px)';
+            }
+        }
+
         if (isLeft || isRight || isMiddle) {
-            document.addEventListener('mousemove', function (event) {
-                var mouseTop = event.clientY;
-
-                if (isLeft) {
-                    leftElement.style.transform = 'translateY(' + mouseTop + 'px)';
-                }
-                if (isRight) {
-                    rightElement.style.transform = 'translateY(' + mouseTop + 'px)';
-                }
-                if (isMiddle) {
-                    middleElement.style.transform = 'translateY(' + mouseTop + 'px)';
-                }
-            });
-            document.addEventListener('touchmove', function (event) {
-                var touchobj = event.changedTouches[0],
-                    mouseTop = parseInt(touchobj.clientY);
-
-                event.preventDefault();
-                if (isLeft) {
-                    leftElement.style.transform = 'translateY(' + mouseTop + 'px)';
-                }
-                if (isRight) {
-                    rightElement.style.transform = 'translateY(' + mouseTop + 'px)';
-                }
-                if (isMiddle) {
-                    middleElement.style.transform = 'translateY(' + mouseTop + 'px)';
-                }
-            }, false);
+            document.addEventListener('mousemove', interactionHandler);
+            document.addEventListener('touchmove', interactionHandler, false);
         }
 
         chain.listen('multipong', deviceIndex, handleIncomingMessage);
