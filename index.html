@@ -7,16 +7,16 @@
     <link rel="stylesheet" href="styles/reset.css">
     <link rel="stylesheet" href="styles/multipong.css">
     <script>
-        window.addEventListener('load', function(){
-            document.getElementById('devices-input').addEventListener('change', function(){
+        window.addEventListener('load', function () {
+            document.getElementById('devices-input').addEventListener('change', function () {
                 var posInput = document.getElementById('position-input');
-                posInput.setAttribute('max', this.value);
+                posInput.setAttribute('max', '' + this.value);
                 if (posInput.value === '') {
                     posInput.value = 1;
                 }
-            })
+            });
 
-            document.getElementById('start-form').addEventListener('submit', function(event){
+            document.getElementById('start-form').addEventListener('submit', function (event) {
                 event.preventDefault();
                 location.assign('game.html?n=' + document.getElementById('devices-input').value + '&i=' + document.getElementById('position-input').value);
                 return false;
@@ -26,9 +26,12 @@
 </head>
 <body>
 <h1 class="blink">mega multi pong</h1>
+
 <form id="start-form">
-    <label for="devices-input">Number of devices:</label><input type="number" placeholder="#" id="devices-input" required min="1" step="1">
-    <label for="position-input">Your position:</label><input type="number" placeholder="#" id="position-input" required min="1" step="1">
+    <label for="devices-input">Number of devices:</label><input type="number" placeholder="#" id="devices-input"
+                                                                required min="1" step="1">
+    <label for="position-input">Your position:</label><input type="number" placeholder="#" id="position-input" required
+                                                             min="1" step="1">
     <button type="submit" id="play-button">play</button>
 </form>
 </body>

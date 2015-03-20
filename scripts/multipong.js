@@ -8,7 +8,7 @@ var multipong = (function (chain) {
 
         balls = [],
         ballId = 0,
-        maxBalls = devices,
+        maxBalls = 5,
 
         scoreSound,
         hitPaddleSound,
@@ -22,6 +22,7 @@ var multipong = (function (chain) {
         isCenter = false,
         interval,
         time,
+        frame = 0,
 
         leftElement,
         rightElement,
@@ -47,6 +48,11 @@ var multipong = (function (chain) {
     }
 
     function gameLoop() {
+        console.log(frame++, balls.length);
+        if (document.body.classList.contains('playing')) {
+            requestAnimationFrame(gameLoop);
+        }
+
         var newTime = new Date().getTime(),
             delay = newTime - time;
         time = newTime;
@@ -134,7 +140,6 @@ var multipong = (function (chain) {
             ballElement.style.transform = 'translate(' + ball.left + 'px, ' + ball.top + 'px)';
         });
 
-        requestAnimationFrame(gameLoop);
     }
 
     function addBall(newBall) {
@@ -256,7 +261,7 @@ var multipong = (function (chain) {
             startSound.play();
             time = new Date().getTime();
             // start the game loop
-            interval = requestAnimationFrame(gameLoop);
+            requestAnimationFrame(gameLoop);
         }, 3000);
 
     }
@@ -290,7 +295,6 @@ var multipong = (function (chain) {
             setMessage('game over');
         }
 
-        cancelAnimationFrame(interval);
         gameOverSound.play();
     }
 
