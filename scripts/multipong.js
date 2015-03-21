@@ -148,6 +148,7 @@ var multipong = (function (chain) {
             ball.angle = Math.atan2(dy, dx) + angleOffset;
             // update positions in css
             ballElement.style.transform = 'translate(' + ball.left + 'px, ' + ball.top + 'px)';
+            ballElement.style.webkitTransform = 'translate(' + ball.left + 'px, ' + ball.top + 'px)';
         });
 
     }
@@ -174,6 +175,7 @@ var multipong = (function (chain) {
         }
 
         newElement.style.transform = 'translate(' + newBall.left + 'px, ' + newBall.top + 'px)';
+        newElement.style.webkitTransform = 'translate(' + newBall.left + 'px, ' + newBall.top + 'px)';
         newElement.id = 'ball' + newBall.id;
         newElement.classList.add('ball');
         document.getElementById('balls').appendChild(newElement);
@@ -246,17 +248,20 @@ var multipong = (function (chain) {
         }
 
         function interactionHandler(event) {
-            var mouseTop = event.changedTouches ? parseFloat(event.changedTouches[0].clientY) : event.clientY;
+            var mouseTop = event.changedTouches ? parseInt(event.changedTouches[0].clientY) : event.clientY;
             event.preventDefault();
 
             if (isLeft) {
                 leftElement.style.transform = 'translateY(' + mouseTop + 'px)';
+                leftElement.style.webkitTransform = 'translateY(' + mouseTop + 'px)';
             }
             if (isRight) {
                 rightElement.style.transform = 'translateY(' + mouseTop + 'px)';
+                rightElement.style.webkitTransform = 'translateY(' + mouseTop + 'px)';
             }
             if (isMiddle) {
                 middleElement.style.transform = 'translateY(' + mouseTop + 'px)';
+                middleElement.style.webkitTransform = 'translateY(' + mouseTop + 'px)';
             }
         }
 
