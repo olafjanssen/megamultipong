@@ -271,6 +271,11 @@ var multipong = (function (chain) {
             document.addEventListener('touchmove', interactionHandler, false);
         }
 
+        document.getElementById('play-button').addEventListener('click', function(event){
+            event.preventDefault();
+            document.location.reload();
+        });
+
         chain.listen('multipong', deviceIndex, handleIncomingMessage);
 
         if (isCenter) {
@@ -289,7 +294,7 @@ var multipong = (function (chain) {
         window.clearInterval(registerInterval);
         setMessage(isCenter ? 'starting' : 'ready?');
         setTimeout(function () {
-            document.getElementById('message').innerText = '';
+            setMessage('');
             document.body.classList.add('playing');
 
             updateScore();
@@ -316,11 +321,12 @@ var multipong = (function (chain) {
     }
 
     function setMessage(message) {
-        document.getElementById('message').innerText = message;
+        document.getElementById('message').innerHTML = message;
     }
 
     function gameOver(winner) {
         document.body.classList.remove('playing');
+        document.body.classList.add('game-over');
         if ((isLeft && !isCenter && winner === 'left') || (isRight && !isLeft && winner) === 'right') {
             setMessage('you win!');
         } else if ((isLeft && !isCenter && winner !== 'left') || (isRight && !isLeft && winner !== 'right')) {

@@ -66,8 +66,15 @@ body.right #right-paddle {
     right: 2em;
 }
 
-#balls {
+body.playing #balls {
     cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjbQg61aAAAADUlEQVQYV2P4//8/IwAI/QL/+TZZdwAAAABJRU5ErkJggg=='), none !important;
+}
+
+body.game-over #balls {
+    display: none;
+}
+
+#balls {
     position: absolute;
     overflow: hidden;
     height: 100%;
@@ -81,14 +88,13 @@ body.playing .ball {
     position: absolute;
     background: white;
     margin: -2em -2em;
-    cursor: none;
     height: 4em;
     width: 4em;
 }
 
 body.center.playing.right.left #center-line,
 body.center.playing:not(.right) #center-line {
-    border: 0.5em white dashed;
+    border-left: 1em white dashed;
     margin-left: -0.5em;
     position: absolute;
     height: 100%;
@@ -109,6 +115,10 @@ body.center.playing:not(.right) #center-line {
     animation-name: blink;
     animation-iteration-count: infinite;
     animation-timing-function: steps(2, start);
+    -moz-animation-duration: 1s;
+    -moz-animation-name: blink;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: steps(2, start);
     -webkit-animation-duration: 1s;
     -webkit-animation-name: blink;
     -webkit-animation-iteration-count: infinite;
@@ -116,6 +126,12 @@ body.center.playing:not(.right) #center-line {
 }
 
 @-webkit-keyframes blink {
+    80% {
+        visibility: hidden;
+    }
+}
+
+@-moz-keyframes blink {
     80% {
         visibility: hidden;
     }
@@ -165,4 +181,8 @@ input {
 #play-button:active {
     background: black;
     color: red;
+}
+
+body:not(.game-over) #start-form {
+    display: none;
 }
