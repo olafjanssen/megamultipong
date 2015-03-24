@@ -10,7 +10,7 @@ var multipong = (function (chain) {
 
         balls = [],
         ballId = 0,
-        maxBalls = 2,
+        maxBalls = 5,
 
         scoreSound,
         hitPaddleSound,
@@ -142,6 +142,7 @@ var multipong = (function (chain) {
                 dx = -dx;
                 ball.speed += 1.0 / 16.0;
                 hitPaddleSound.play();
+                sendMessage(Math.floor(devices / 2), {action: 'restart'});
             }
 
             // update ball angle
@@ -160,8 +161,8 @@ var multipong = (function (chain) {
         }
 
         var newElement = document.createElement('div'),
-            angle = Math.PI * Math.round(Math.random()) + (Math.random() - 0.5) * 30 / 180 * Math.PI,
-            startPosition = toAbsolute(isRight && isCenter && !isLeft ? 0 : isRight && isLeft ? 0.5 : Math.cos(angle) > 0 ? 0.75 : 0.25, 0.5);
+            angle = Math.PI * Math.round(Math.random()) + (Math.random() - 0.5) * 60 / 180 * Math.PI,
+            startPosition = toAbsolute(isRight && isCenter && !isLeft ? 0 : isRight && isLeft ? 0.5 : Math.cos(angle) > 0 ? 0.75 : 0.25, 0.25 + Math.random()/2.0);
 
         //adds a new ball
         if (!newBall) {
@@ -274,8 +275,9 @@ var multipong = (function (chain) {
 
         if (isCenter) {
             addBall();
-            setMessage('waiting');
         }
+
+        setMessage('waiting');
 
         registerInterval = window.setInterval(function () {
             sendMessage(Math.floor(devices / 2), {action: 'register', position: deviceIndex});
