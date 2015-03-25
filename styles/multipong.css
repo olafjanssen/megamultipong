@@ -144,7 +144,7 @@ body.center.playing:not(.right) #center-line {
 }
 
 
-#start-form {
+#start-form, #restart-form {
     text-align: center;
 }
 
@@ -183,6 +183,6 @@ input {
     color: red;
 }
 
-body:not(.game-over) #start-form {
+body:not(.game-over) #restart-form {
     display: none;
 }
