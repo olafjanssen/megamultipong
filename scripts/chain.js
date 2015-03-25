@@ -11,7 +11,7 @@
 var chain = (function () {
     'use strict';
 
-    var channel = new HydnaChannel('http://fhict-s4.hydna.net', 'rw'),
+    var channel = new HydnaChannel('http://######.hydna.net', 'rw'),
         position = 0;
 
     return {
