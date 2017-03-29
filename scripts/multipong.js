@@ -3,6 +3,8 @@ var multipong = (function (chain) {
 
     var devices = 0,
         deviceIndex = 0,
+        uuid = 0,
+        deviceIds = [],
         registered = [],
         registerInterval,
         score = {left: 0, right: 0},
@@ -40,13 +42,40 @@ var multipong = (function (chain) {
 
     function sendMessage(pos, message) {
         chain.send('multipong', pos, message);
-        //handleIncomingMessage(message);
     }
 
     function sendGlobalMessage(message) {
         for (var i = 0; i < devices; i++) {
             chain.send('multipong', i, message);
         }
+    }
+
+    function arrange(_uuid) {
+        uuid = _uuid;
+        document.body.classList.add('not-arranged');
+        document.getElementById('start-button').addEventListener('click', function (event) {
+            event.preventDefault();
+            location.assign('game.html?n=' + deviceIds.length + '&i=' + (deviceIds.indexOf(uuid)+1) + '&uuid=' + uuid);
+            return false;
+        });
+
+        setMessage('counting')
+
+        chain.listen('multipong', deviceIndex, function (data) {
+            if (data.action === 'ping') {
+                if (deviceIds.indexOf(data.uuid) === -1) {
+                    deviceIds.push(data.uuid);
+                    deviceIds = deviceIds.sort();
+                }
+                setMessage((deviceIds.indexOf(uuid)+1) + ' of ' + deviceIds.length);
+            }
+        });
+
+        setInterval(function () {
+            console.log(uuid, deviceIds);
+            sendMessage(deviceIndex, {action: 'ping', uuid: uuid});
+        }, 1000);
+
     }
 
     function gameLoop() {
@@ -162,7 +191,7 @@ var multipong = (function (chain) {
 
         var newElement = document.createElement('div'),
             angle = Math.PI * Math.round(Math.random()) + (Math.random() - 0.5) * 60 / 180 * Math.PI,
-            startPosition = toAbsolute(isRight && isCenter && !isLeft ? 0 : isRight && isLeft ? 0.5 : Math.cos(angle) > 0 ? 0.75 : 0.25, 0.25 + Math.random()/2.0);
+            startPosition = toAbsolute(isRight && isCenter && !isLeft ? 0 : isRight && isLeft ? 0.5 : Math.cos(angle) > 0 ? 0.75 : 0.25, 0.25 + Math.random() / 2.0);
 
         //adds a new ball
         if (!newBall) {
@@ -271,9 +300,9 @@ var multipong = (function (chain) {
             document.addEventListener('touchmove', interactionHandler, false);
         }
 
-        document.getElementById('play-button').addEventListener('click', function(event){
+        document.getElementById('play-button').addEventListener('click', function (event) {
             event.preventDefault();
-            document.location.reload();
+            document.location.href('');
         });
 
         chain.listen('multipong', deviceIndex, handleIncomingMessage);
@@ -366,6 +395,6 @@ var multipong = (function (chain) {
     }
 
     return {
-        init: init
+        init: init, arrange: arrange
     }
 }(chain));

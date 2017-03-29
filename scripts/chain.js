@@ -11,10 +11,11 @@
 var chain = (function () {
     'use strict';
 
-    var channel = new HydnaChannel('http://######.hydna.net', 'rw'),
-        position = 0;
+    var channel = new HydnaChannel('http://fhict-s4.hydna.net', 'rw'),
+        position = -1;
 
     return {
+
         /**
          * Start listening to changes in the chain position.
          * When a messages arrives for the user's position the callback is called and the user can start it's chain animation.

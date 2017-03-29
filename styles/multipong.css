@@ -70,7 +70,7 @@ body.playing #balls {
     cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjbQg61aAAAADUlEQVQYV2P4//8/IwAI/QL/+TZZdwAAAABJRU5ErkJggg=='), none !important;
 }
 
-body.game-over #balls {
+body.game-over #balls, body.not-arranged #balls {
     display: none;
 }
 
@@ -144,7 +144,7 @@ body.center.playing:not(.right) #center-line {
 }
 
 
-#start-form, #restart-form {
+#start-form, #restart-form, #ready-form {
     text-align: center;
 }
 
@@ -164,7 +164,7 @@ input {
     width: 3em;
 }
 
-#play-button {
+#play-button, #start-button {
     font-family: inherit;
     background: white;
     border: none;
@@ -173,16 +173,31 @@ input {
     width: 4em;
 }
 
-#play-button:hover {
+
+
+#play-button:hover, #start-button:hover {
     background: black;
     color: white;
 }
 
-#play-button:active {
+#play-button:active, #start-button:active {
     background: black;
     color: red;
 }
 
 body:not(.game-over) #restart-form {
     display: none;
+}
+
+#ready-form {
+    display: none;
+}
+
+body.not-arranged #ready-form {
+    display: block;
+}
+
+#ready-form p {
+    font-size: 1.5em;
+    color: white;
 }

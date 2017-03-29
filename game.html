@@ -23,9 +23,9 @@
         }
 
         window.addEventListener('load', function () {
-            var settings = {n: parseInt(getQueryVariable('n')), i: parseInt(getQueryVariable('i'))};
+            var settings = {n: parseInt(getQueryVariable('n')), i: parseInt(getQueryVariable('i')), uuid: parseInt(getQueryVariable('uuid'))};
             if (isNaN(settings.n) || isNaN(settings.i)) {
-                document.body.classList.add('menu');
+                multipong.arrange(settings.uuid);
             } else {
                 multipong.init(settings.n, settings.i - 1);
             }
@@ -62,6 +62,11 @@
 <form id="restart-form" class="when-game-over">
     <button type="submit" id="play-button">replay</button>
 </form>
+<form id="ready-form" class="when-not-arranged">
+    <p>take your position and start when everybody is ready</p>
+    <button type="submit" id="start-button">start</button>
+</form>
+
 
 </body>
 </html>
