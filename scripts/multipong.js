@@ -59,7 +59,7 @@ var multipong = (function (chain) {
             return false;
         });
 
-        setMessage('counting')
+        setMessage('# of #');
 
         chain.listen('multipong', deviceIndex, function (data) {
             if (data.action === 'ping') {
@@ -151,7 +151,7 @@ var multipong = (function (chain) {
                 ball.left = rightRect.left - ballRect.width / 2;
                 dx = -Math.abs(dx);
                 angleOffset = ((ballRect.top - rightRect.top + ballRect.height) / (rightRect.height + ballRect.height) - 0.5) * -30 / 180 * Math.PI;
-                ball.speed += 1.0 / 16.0;
+                ball.speed += 2.0 / 16.0;
                 hitPaddleSound.play();
                 sendMessage(Math.floor(devices / 2), {action: 'restart'});
             }
@@ -160,7 +160,7 @@ var multipong = (function (chain) {
                 ball.left = leftRect.right + ballRect.width / 2;
                 dx = Math.abs(dx);
                 angleOffset = ((ballRect.top - leftRect.top + ballRect.height) / (leftRect.height + ballRect.height) - 0.5) * 30 / 180 * Math.PI;
-                ball.speed += 1.0 / 16.0;
+                ball.speed += 2.0 / 16.0;
                 hitPaddleSound.play();
                 sendMessage(Math.floor(devices / 2), {action: 'restart'});
             }
@@ -169,7 +169,7 @@ var multipong = (function (chain) {
                 ball.left = dx > 0 ? middleRect.left - ballRect.width : middleRect.right + ballRect.width / 2;
                 angleOffset = ((ballRect.top - middleRect.top + ballRect.height) / (middleRect.height + ballRect.height) - 0.5) * dx / Math.abs(dx) * -30 / 180 * Math.PI;
                 dx = -dx;
-                ball.speed += 1.0 / 16.0;
+                ball.speed += 2.0 / 16.0;
                 hitPaddleSound.play();
                 sendMessage(Math.floor(devices / 2), {action: 'restart'});
             }
@@ -302,7 +302,12 @@ var multipong = (function (chain) {
 
         document.getElementById('play-button').addEventListener('click', function (event) {
             event.preventDefault();
-            document.location.href('');
+            document.location.reload();
+        });
+
+        document.getElementById('home-button').addEventListener('click', function (event) {
+            event.preventDefault();
+            document.location.assign('index.html');
         });
 
         chain.listen('multipong', deviceIndex, handleIncomingMessage);

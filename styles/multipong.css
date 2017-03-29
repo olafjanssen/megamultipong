@@ -164,7 +164,7 @@ input {
     width: 3em;
 }
 
-#play-button, #start-button {
+#play-button, #start-button, #home-button {
     font-family: inherit;
     background: white;
     border: none;
@@ -175,12 +175,12 @@ input {
 
 
 
-#play-button:hover, #start-button:hover {
+#play-button:hover, #start-button:hover, #home-button:hover {
     background: black;
     color: white;
 }
 
-#play-button:active, #start-button:active {
+#play-button:active, #start-button:active, #home-button:active {
     background: black;
     color: red;
 }
