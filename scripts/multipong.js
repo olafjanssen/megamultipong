@@ -41,12 +41,12 @@ var multipong = (function (chain) {
     }
 
     function sendMessage(pos, message) {
-        chain.send('multipong', pos, message);
+        chain.send('mmp', pos, message);
     }
 
     function sendGlobalMessage(message) {
         for (var i = 0; i < devices; i++) {
-            chain.send('multipong', i, message);
+            chain.send('mmp', i, message);
         }
     }
 
@@ -61,7 +61,7 @@ var multipong = (function (chain) {
 
         setMessage('# of #');
 
-        chain.listen('multipong', deviceIndex, function (data) {
+        chain.listen('mmp', deviceIndex, function (data) {
             if (data.action === 'ping') {
                 if (deviceIds.indexOf(data.uuid) === -1) {
                     deviceIds.push(data.uuid);
@@ -310,7 +310,7 @@ var multipong = (function (chain) {
             document.location.assign('index.html');
         });
 
-        chain.listen('multipong', deviceIndex, handleIncomingMessage);
+        chain.listen('mmp', deviceIndex, handleIncomingMessage);
 
         if (isCenter) {
             addBall();
